@@ -1,11 +1,11 @@
 import sys
 import pandas as pd
 
-sys.path.append("/Users/brendan/Desktop/fastai/")
+sys.path.append("/home/bread/fastai/")
 
 from fastai.dataset import *
 
-PATH = Path('data')
+PATH = Path('/home/bread/data/salt')
 TRAIN_DN = 'images128'
 MASKS_DN = 'masks128'
 TEST_DN = 'test128'

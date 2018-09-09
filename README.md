@@ -8,6 +8,9 @@ environment. Not the best solution but I have a separate environment to use skim
 todo ~
 	- Set up SSH access to local machine
 	- Rewrite ipynb notebook as a more organized Python package.
+	- Reflection padding and other ways to deal with image size
+	- cross fold validation
+	- early stopping
 	- Combat overfitting
 		- Dropout
 		- Additional data augmentation

@@ -3,6 +3,7 @@ sys.path.append("/Users/brendan/Desktop/fastai/")
 
 from fastai.conv_learner import *
 from data import get_model_data
+from model_ import LinkNet34
 
 f = resnet34 # Pytorch model
 cut,lr_cut = model_meta[f] # Layer nums of where to cut off the head, etc.
