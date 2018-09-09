@@ -46,10 +46,10 @@ class Unet34(nn.Module):
         self.sfs = [SaveFeatures(rn[i]) for i in [2,4,5,6]] # Saved activations from contracting/resnet part
 #         self.sfs = [SaveFeatures(rn[i]) for i in [2,5,12,22]] # for VGG16
         self.up1 = UnetBlock(512,256,256)
-        self.up2 = UnetBlock(256,128,256)
-        self.up3 = UnetBlock(256,64,256)
-        self.up4 = UnetBlock(256,64,256)
-        self.up5 = nn.ConvTranspose2d(256, 1, 2, stride=2)
+        self.up2 = UnetBlock(256,128,128)
+        self.up3 = UnetBlock(128,64,64)
+        self.up4 = UnetBlock(64,64,32)
+        self.up5 = nn.ConvTranspose2d(32, 1, 2, stride=2)
         
     def forward(self,x):
         x = F.relu(self.rn(x))
