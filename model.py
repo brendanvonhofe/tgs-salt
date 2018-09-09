@@ -5,8 +5,10 @@ from fastai.conv_learner import *
 from data import get_model_data
 from model_ import LinkNet34
 
-f = resnet34 # Pytorch model
-cut,lr_cut = model_meta[f] # Layer nums of where to cut off the head, etc.
+# # f = resnet34 # Pytorch model
+# f = dn121
+# cut,lr_cut = model_meta[f] # Layer nums of where to cut off the head, etc.
+cut, lr_cut = [0, 0]
 
 def get_base():
     layers = cut_model(f(True), cut)
@@ -39,17 +41,40 @@ class UnetBlock(nn.Module):
         cat_p = torch.cat([up_p,x_p], dim=1)
         return self.bn(F.relu(cat_p))
 
+
 # Expansive path of Unet
 class Unet34(nn.Module):
-    def __init__(self, rn):
+    def __init__(self, rn, arch='resnet34'):
         super().__init__()
+        # Number of channels (filters) at key layers
+        rn34_ch = [(512, 256), (256, 128), (256, 64), (256, 64)]
+        dn121_ch = [(1024, 1024), (256, 512), (256, 256), (256, 64)]
+        # Layer groups to save features of
+        rn34_l = [2,4,5,6]
+        dn121_l = [2,4,6,8]
+
+
         self.rn = rn # Resnet base
-        self.sfs = [SaveFeatures(rn[i]) for i in [2,4,5,6]] # Saved activations from contracting/resnet part
+
+        if(arch == 'resnet34'):
+            ch = rn34_ch
+            ls = rn34_l
+        elif(arch == 'densenet121'):
+            ch = dn121_ch
+            ls = dn121_l
+
+        self.sfs = [SaveFeatures(rn[i]) for i in ls] # Saved activations from contracting/resnet part
 #         self.sfs = [SaveFeatures(rn[i]) for i in [2,5,12,22]] # for VGG16
-        self.up1 = UnetBlock(512,256,256)
-        self.up2 = UnetBlock(256,128,256)
-        self.up3 = UnetBlock(256,64,256)
-        self.up4 = UnetBlock(256,64,256)
+
+        self.up1 = UnetBlock(ch[0][0],ch[0][1],256)
+        self.up2 = UnetBlock(ch[1][0],ch[1][1],256)
+        self.up3 = UnetBlock(ch[2][0],ch[2][1],256)
+        self.up4 = UnetBlock(ch[3][0],ch[3][1],256)
+
+        # self.up1 = UnetBlock(512,256,256)
+        # self.up2 = UnetBlock(256,128,256)
+        # self.up3 = UnetBlock(256,64,256)
+        # self.up4 = UnetBlock(256,64,256)
         self.up5 = nn.ConvTranspose2d(256, 1, 2, stride=2)
         
     def forward(self,x):
@@ -73,13 +98,26 @@ class UnetModel():
         return lgs + [children(self.model)[1:]]
 
 # Instantiate model
-m_base = get_base()
-m = to_gpu(Unet34(m_base))
-models = UnetModel(m)
 
-def get_learner():
+
+def get_learner(arch='resnet34'):
     # Instantiate fastai learner
     md = get_model_data()
+
+    if(arch == 'resnet34'):
+        f = resnet34
+        cut,lr_cut = model_meta[f]
+        layers = cut_model(f(True), cut)
+        m_base = nn.Sequential(*layers)
+        m = to_gpu(Unet34(m_base, arch='resnet34'))
+    elif(arch == 'densenet121'):
+        f = dn121
+        cut,lr_cut = model_meta[f]
+        layers = cut_model(f(True), cut)
+        m_base = nn.Sequential(*layers)[0]
+        m = to_gpu(Unet34(m_base, arch='densenet121'))
+
+    models = UnetModel(m)
 
     learn = ConvLearner(md, models)
     learn.opt_fn=optim.Adam

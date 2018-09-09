@@ -18,7 +18,7 @@ class MatchedFilesDataset(FilesDataset):
     def get_y(self, i): return open_image(os.path.join(self.path, self.y[i]))
     def get_c(self): return 0
 
-def train_test_fnames(val_size=400):
+def train_test_fnames(val_size=800):
     train_csv = pd.read_csv(PATH/'train.csv')
 
     x_names = np.array([Path(TRAIN_DN)/(o+'.png') for o in train_csv['id']])
