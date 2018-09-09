@@ -19,7 +19,7 @@ class EarlyStopping(Callback):
 
 def main():
     # Currently support "resnet34" and "densenet121"
-    learn = get_learner('densenet121')
+    learn = get_learner('resnet34')
 
     learn.freeze_to(1)
 

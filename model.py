@@ -3,16 +3,33 @@ sys.path.append("/Users/brendan/Desktop/fastai/")
 
 from fastai.conv_learner import *
 from data import get_model_data
-from model_ import LinkNet34
 
-# # f = resnet34 # Pytorch model
-# f = dn121
-# cut,lr_cut = model_meta[f] # Layer nums of where to cut off the head, etc.
-cut, lr_cut = [0, 0]
+# Instantiate model
+def get_learner(arch='resnet34'):
+    # Instantiate fastai learner
+    md = get_model_data()
 
-def get_base():
-    layers = cut_model(f(True), cut)
-    return nn.Sequential(*layers)
+    if(arch == 'resnet34'):
+        f = resnet34
+        cut,lr_cut = model_meta[f]
+        layers = cut_model(f(True), cut)
+        m_base = nn.Sequential(*layers)
+        m = to_gpu(Unet34(m_base, arch='resnet34'))
+    elif(arch == 'densenet121'):
+        f = dn121
+        cut,lr_cut = model_meta[f]
+        layers = cut_model(f(True), cut)
+        m_base = nn.Sequential(*layers)[0]
+        m = to_gpu(Unet34(m_base, arch='densenet121'))
+
+    models = UnetModel(m, lr_cut=lr_cut)
+
+    learn = ConvLearner(md, models)
+    learn.opt_fn=optim.Adam
+    learn.crit=nn.BCEWithLogitsLoss()
+    learn.metrics=[accuracy_thresh(0.5),dice]
+
+    return learn
 
 # Similar to IoU metric
 def dice(pred, targs):
@@ -90,38 +107,10 @@ class Unet34(nn.Module):
         for sf in self.sfs: sf.remove()
 
 class UnetModel():
-    def __init__(self,model,name='unet'):
-        self.model,self.name = model,name
+    def __init__(self, model, lr_cut, name='unet'):
+        self.model,self.name,self.lr_cut = model,name, lr_cut
 
     def get_layer_groups(self, precompute):
-        lgs = list(split_by_idxs(children(self.model.rn), [lr_cut]))
+        lgs = list(split_by_idxs(children(self.model.rn), [self.lr_cut]))
         return lgs + [children(self.model)[1:]]
 
-# Instantiate model
-
-
-def get_learner(arch='resnet34'):
-    # Instantiate fastai learner
-    md = get_model_data()
-
-    if(arch == 'resnet34'):
-        f = resnet34
-        cut,lr_cut = model_meta[f]
-        layers = cut_model(f(True), cut)
-        m_base = nn.Sequential(*layers)
-        m = to_gpu(Unet34(m_base, arch='resnet34'))
-    elif(arch == 'densenet121'):
-        f = dn121
-        cut,lr_cut = model_meta[f]
-        layers = cut_model(f(True), cut)
-        m_base = nn.Sequential(*layers)[0]
-        m = to_gpu(Unet34(m_base, arch='densenet121'))
-
-    models = UnetModel(m)
-
-    learn = ConvLearner(md, models)
-    learn.opt_fn=optim.Adam
-    learn.crit=nn.BCEWithLogitsLoss()
-    learn.metrics=[accuracy_thresh(0.5),dice]
-
-    return learn
