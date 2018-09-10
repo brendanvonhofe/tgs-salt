@@ -23,7 +23,6 @@ def get_learner(arch='resnet34'):
         m = to_gpu(Unet34(m_base, arch='densenet121'))
 
     models = UnetModel(m, lr_cut=lr_cut)
-
     learn = ConvLearner(md, models)
     learn.opt_fn=optim.Adam
     learn.crit=nn.BCEWithLogitsLoss()
@@ -61,7 +60,7 @@ class UnetBlock(nn.Module):
 
 # Expansive path of Unet
 class Unet34(nn.Module):
-    def __init__(self, rn, arch='resnet34'):
+    def __init__(self, rn, arch='resnet34', p = [0.8, 0.8, 0.8, 0.0]):
         super().__init__()
         # Number of channels (filters) at key layers
         rn34_ch = [(512, 256), (256, 128), (256, 64), (256, 64)]
@@ -84,10 +83,13 @@ class Unet34(nn.Module):
 #         self.sfs = [SaveFeatures(rn[i]) for i in [2,5,12,22]] # for VGG16
 
         self.up1 = UnetBlock(ch[0][0],ch[0][1],256)
+        self.drop1 = nn.Dropout2d(p[0])
         self.up2 = UnetBlock(ch[1][0],ch[1][1],256)
+        self.drop2 = nn.Dropout2d(p[1])
         self.up3 = UnetBlock(ch[2][0],ch[2][1],256)
+        self.drop3 = nn.Dropout2d(p[2])
         self.up4 = UnetBlock(ch[3][0],ch[3][1],256)
-
+        self.drop4 = nn.Dropout2d(p[3])
         # self.up1 = UnetBlock(512,256,256)
         # self.up2 = UnetBlock(256,128,256)
         # self.up3 = UnetBlock(256,64,256)
@@ -97,9 +99,13 @@ class Unet34(nn.Module):
     def forward(self,x):
         x = F.relu(self.rn(x))
         x = self.up1(x, self.sfs[3].features)
+        x = self.drop1(x)
         x = self.up2(x, self.sfs[2].features)
+        x = self.drop2(x)
         x = self.up3(x, self.sfs[1].features)
+        x = self.drop3(x)
         x = self.up4(x, self.sfs[0].features)
+        x = self.drop4(x)
         x = self.up5(x)
         return x[:,0]
     
