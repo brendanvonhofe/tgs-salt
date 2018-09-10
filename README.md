@@ -6,6 +6,7 @@ Initial up-scaling of images for UNet and downscaling for submission currently r
 environment. Not the best solution but I have a separate environment to use skimage.
 
 todo ~
+
 	- Set up SSH access to local machine
 	
 	- Rewrite ipynb notebook as a more organized Python package.
