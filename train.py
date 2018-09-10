@@ -28,22 +28,22 @@ def main():
 
     lrs = np.array([lr/16,lr/4,lr])
 
-    learn.fit(lrs,1,wds=wd,cycle_len=8,use_clr=(5,8), callbacks=[EarlyStopping('letsstop0', learn)])
+    learn.fit(lrs,1,wds=wd,cycle_len=20,use_clr=(5,8), callbacks=[EarlyStopping('rn0', learn)])
 
-    learn.load('letsstop0')
+    learn.load('rn0')
 
     learn.unfreeze()
     learn.bn_freeze(True)
 
-    learn.fit(lrs/4, 1, wds=wd, cycle_len=20, use_clr=(20,10), callbacks=[EarlyStopping('letsstop1', learn)])
+    learn.fit(lrs/4, 1, wds=wd, cycle_len=50, use_clr=(20,10), callbacks=[EarlyStopping('rn1', learn)])
 
-    learn.load('letsstop1')
+    learn.load('rn1')
 
     lr=2e-4
     wd=1e-7
 
     lrs = np.array([lr/16,lr/4,lr])
-    learn.fit(lrs, 1, wds=wd, cycle_len=5, callbacks=[EarlyStopping('letsstop2', learn)])
+    learn.fit(lrs, 1, wds=wd, cycle_len=20, callbacks=[EarlyStopping('rn2', learn)])
 
 if __name__ == '__main__':
     main()

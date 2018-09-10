@@ -37,7 +37,7 @@ def transforms():
 #             RandomDihedral(tfm_y=TfmType.CLASS),
             RandomLighting(0.05, 0.05, tfm_y=TfmType.CLASS)]
 
-def get_model_data(batch_size=32):
+def get_model_data(batch_size=64):
     im_size = 128
 
     sets = train_test_fnames()

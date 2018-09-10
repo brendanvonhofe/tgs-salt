@@ -6,9 +6,11 @@ Initial up-scaling of images for UNet and downscaling for submission currently r
 environment. Not the best solution but I have a separate environment to use skimage.
 
 todo ~
+	- config setup
+	- experiment with SGD
 	- Set up SSH access to local machine
 	- Rewrite ipynb notebook as a more organized Python package.
-	- Reflection padding and other ways to deal with image size
+	- Reflection padding or other ways to deal with image size
 	- cross fold validation
 	- early stopping
 	- Combat overfitting
