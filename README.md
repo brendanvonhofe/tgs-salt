@@ -7,21 +7,37 @@ environment. Not the best solution but I have a separate environment to use skim
 
 todo ~
 	- config setup
+
 	- experiment with SGD
+
 	- Set up SSH access to local machine
+
 	- Rewrite ipynb notebook as a more organized Python package.
+
 	- Reflection padding or other ways to deal with image size
+
 	- cross fold validation
+
 	- early stopping
+
 	- Combat overfitting
+	
 		- Dropout
+		
 		- Additional data augmentation
+		
 			- Shearing, zooming, distortions, etc.
+			
 	- Define hyperparameters and write scripts to tune em
+	
 		- Dilated conv
+		
 		- Train model from scratch?
+		
 	- Implement additional models (see below)
+	
 	- Ensemble
+	
 	- *** Architecture search
 
 
