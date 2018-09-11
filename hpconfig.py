@@ -1,0 +1,10 @@
+seq_lrs = [4e-2, 2e-4]
+lrs_scalings = [4, 4]
+#lrs_scalings = [10, 10]
+seq_wds = [1e-7, 1e-7]
+cycle_lens = [20, 50, 20]
+clrs = [(5, 8), (20, 10)]
+kernels = [256, 256, 256, 256]
+#kernels = [256, 128, 64, 32]
+arch = "resnet34"
+# arch = "densenet121"

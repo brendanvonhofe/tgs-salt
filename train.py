@@ -1,5 +1,7 @@
 import sys
-sys.path.append("/home/bread/fastai/")
+import hpconfig as cfg
+import pathconfig
+sys.path.append(pathconfig.sys_path)
 
 from fastai.conv_learner import *
 from model import get_learner
@@ -19,31 +21,31 @@ class EarlyStopping(Callback):
 
 def main():
     # Currently support "resnet34" and "densenet121"
-    learn = get_learner('resnet34')
+    learn = get_learner(cfg.arch)
 
     learn.freeze_to(1)
 
-    lr=4e-2
-    wd=1e-7
+    lr=cfg.seq_lrs[0]
+    wd=cfg.seq_wds[0]
 
-    lrs = np.array([lr/16,lr/4,lr])
+    lrs = np.array([lr/(cfg.lrs_scalings[0] ** 2),lr/cfg.lrs_scalings[0],lr])
 
-    learn.fit(lrs,1,wds=wd,cycle_len=20,use_clr=(5,8), callbacks=[EarlyStopping('rn0', learn)])
+    learn.fit(lrs,1,wds=cfg.seq_wds[0],cycle_len=cfg.cycle_lens[0],use_clr=cfg.clrs[0], callbacks=[EarlyStopping(cfg.arch + str(0), learn)])
 
     learn.load('rn0')
 
     learn.unfreeze()
     learn.bn_freeze(True)
 
-    learn.fit(lrs/4, 1, wds=wd, cycle_len=50, use_clr=(20,10), callbacks=[EarlyStopping('rn1', learn)])
+    learn.fit(lrs/4, 1, wds=wd, cycle_len=cfg.cycle_lens[1], use_clr=cfg.clrs[1], callbacks=[EarlyStopping(cfg.arch + str(1), learn)])
 
     learn.load('rn1')
 
-    lr=2e-4
-    wd=1e-7
+    lr=cfg.seq_lrs[1]
+    wd=cfg.seq_wds[1]
 
-    lrs = np.array([lr/16,lr/4,lr])
-    learn.fit(lrs, 1, wds=wd, cycle_len=20, callbacks=[EarlyStopping('rn2', learn)])
+    lrs = np.array([lr/(cfg.lrs_scalings[1] ** 2),lr/cfg.lrs_scalings[1],lr])
+    learn.fit(lrs, 1, wds=wd, cycle_len=cfg.cycle_lens[2], callbacks=[EarlyStopping(cfg.arch + str(2), learn)])
 
 if __name__ == '__main__':
     main()

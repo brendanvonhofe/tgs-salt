@@ -1,5 +1,7 @@
 import sys
-sys.path.append("/Users/brendan/Desktop/fastai/")
+import hpconfig as cfg
+import pathconfig
+sys.path.append(pathconfig.sys_path)
 
 from fastai.conv_learner import *
 from data import get_model_data
@@ -50,7 +52,7 @@ class UnetBlock(nn.Module):
         self.x_conv  = nn.Conv2d(x_in,  x_out,  1)
         self.tr_conv = nn.ConvTranspose2d(up_in, up_out, 2, stride=2)
         self.bn = nn.BatchNorm2d(n_out)
-        
+
     def forward(self, up_p, x_p):
         up_p = self.tr_conv(up_p) # Expansive part
         x_p = self.x_conv(x_p) # Further convolution on the activations from contracting part
@@ -82,20 +84,24 @@ class Unet34(nn.Module):
         self.sfs = [SaveFeatures(rn[i]) for i in ls] # Saved activations from contracting/resnet part
 #         self.sfs = [SaveFeatures(rn[i]) for i in [2,5,12,22]] # for VGG16
 
-        self.up1 = UnetBlock(ch[0][0],ch[0][1],256)
+        # self.up1 = UnetBlock(ch[0][0],ch[0][1],256)
+        self.up1 = UnetBlock(ch[0][0], ch[0][1], cfg.kernels[0])
         self.drop1 = nn.Dropout2d(p[0])
-        self.up2 = UnetBlock(ch[1][0],ch[1][1],256)
+        # self.up2 = UnetBlock(ch[1][0],ch[1][1],256)
+        self.up2 = UnetBlock(cfg.kernels[0], ch[1][1], cfg.kernels[1])
         self.drop2 = nn.Dropout2d(p[1])
-        self.up3 = UnetBlock(ch[2][0],ch[2][1],256)
+        # self.up3 = UnetBlock(ch[2][0],ch[2][1],256)
+        self.up3 = UnetBlock(cfg.kernels[1], ch[2][1], cfg.kernels[2])
         self.drop3 = nn.Dropout2d(p[2])
-        self.up4 = UnetBlock(ch[3][0],ch[3][1],256)
+        # self.up4 = UnetBlock(ch[3][0],ch[3][1],256)
+        self.up4 = UnetBlock(cfg.kernels[2], ch[3][1], cfg.kernels[3])
         self.drop4 = nn.Dropout2d(p[3])
         # self.up1 = UnetBlock(512,256,256)
         # self.up2 = UnetBlock(256,128,256)
         # self.up3 = UnetBlock(256,64,256)
         # self.up4 = UnetBlock(256,64,256)
-        self.up5 = nn.ConvTranspose2d(256, 1, 2, stride=2)
-        
+        self.up5 = nn.ConvTranspose2d(cfg.kernels[3], 1, 2, stride=2)
+
     def forward(self,x):
         x = F.relu(self.rn(x))
         x = self.up1(x, self.sfs[3].features)
@@ -108,7 +114,7 @@ class Unet34(nn.Module):
         x = self.drop4(x)
         x = self.up5(x)
         return x[:,0]
-    
+
     def close(self):
         for sf in self.sfs: sf.remove()
 
@@ -119,4 +125,3 @@ class UnetModel():
     def get_layer_groups(self, precompute):
         lgs = list(split_by_idxs(children(self.model.rn), [self.lr_cut]))
         return lgs + [children(self.model)[1:]]
-

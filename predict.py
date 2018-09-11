@@ -1,19 +1,21 @@
 import sys
-sys.path.append("/home/bread/fastai/")
+import hpconfig as cfg
+import pathconfig
+sys.path.append(pathconfig.sys_path)
 
 from fastai.conv_learner import *
 from model import get_learner
 from data import get_model_data
 
-PATH = Path('/home/bread/data/salt')
+PATH = Path(pathconfig.PATH)
 
 
 def main():
     md = get_model_data()
 
-    learn = get_learner('densenet121')
-    learn.load('dn2')
-    
+    learn = get_learner(cfg.arch)
+    learn.load(cfg.arch + str(2))
+
     # Make predictions
     learn.TTA() # Test time augmentation
     preds = learn.predict(is_test=True)
