@@ -20,6 +20,7 @@ class EarlyStopping(Callback):
 
 
 def main():
+    cfg.print_hps()
     # Currently support "resnet34" and "densenet121"
     learn = get_learner(cfg.arch)
 

@@ -8,3 +8,12 @@ kernels = [256, 256, 256, 256]
 #kernels = [256, 128, 64, 32]
 arch = "resnet34"
 # arch = "densenet121"
+
+def print_hps():
+    print("learning rates at each set of epochs: ", seq_lrs)
+    print("scaling of learning rates through layer groups: ", lrs_scalings)
+    print("weight decays at each epoch set: ", seq_wds)
+    print("cycle lengths: ", cycle_lens)
+    print("learning rate cycle parameters: ", clrs)
+    print("#kernels at each layer: ", kernels)
+    print("architecture: ", arch)
