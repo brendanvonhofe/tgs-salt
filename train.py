@@ -33,14 +33,14 @@ def main():
 
     learn.fit(lrs,1,wds=cfg.seq_wds[0],cycle_len=cfg.cycle_lens[0],use_clr=cfg.clrs[0], callbacks=[EarlyStopping(cfg.arch + str(0), learn)])
 
-    learn.load('rn0')
+    learn.load(cfg.arch + str(0))
 
     learn.unfreeze()
     learn.bn_freeze(True)
 
     learn.fit(lrs/4, 1, wds=wd, cycle_len=cfg.cycle_lens[1], use_clr=cfg.clrs[1], callbacks=[EarlyStopping(cfg.arch + str(1), learn)])
 
-    learn.load('rn1')
+    learn.load(cfg.arch + str(0))
 
     lr=cfg.seq_lrs[1]
     wd=cfg.seq_wds[1]
