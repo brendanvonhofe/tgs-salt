@@ -62,7 +62,7 @@ class UnetBlock(nn.Module):
 
 # Expansive path of Unet
 class Unet34(nn.Module):
-    def __init__(self, rn, arch='resnet34', p = [0.8, 0.8, 0.8, 0.0]):
+    def __init__(self, rn, arch='resnet34', p = cfg.p):
         super().__init__()
         # Number of channels (filters) at key layers
         rn34_ch = [(512, 256), (256, 128), (256, 64), (256, 64)]

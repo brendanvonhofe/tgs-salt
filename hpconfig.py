@@ -8,6 +8,7 @@ kernels = [256, 256, 256, 256]
 #kernels = [256, 128, 64, 32]
 arch = "resnet34"
 # arch = "densenet121"
+p = [0.5, 0.5, 0.5, 0.0]
 
 def print_hps():
     print("learning rates at each set of epochs: ", seq_lrs)
@@ -17,3 +18,4 @@ def print_hps():
     print("learning rate cycle parameters: ", clrs)
     print("#kernels at each layer: ", kernels)
     print("architecture: ", arch)
+    print("Probability of dropout in each layer: ", p)
