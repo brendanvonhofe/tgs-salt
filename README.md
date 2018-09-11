@@ -22,23 +22,23 @@ todo ~
 	- early stopping
 
 	- Combat overfitting
-	
+
 		- Dropout
-		
+
 		- Additional data augmentation
-		
+
 			- Shearing, zooming, distortions, etc.
-			
+
 	- Define hyperparameters and write scripts to tune em
-	
+
 		- Dilated conv
-		
+
 		- Train model from scratch?
-		
+
 	- Implement additional models (see below)
-	
+
 	- Ensemble
-	
+
 	- *** Architecture search
 
 

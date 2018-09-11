@@ -1,11 +1,12 @@
 import sys
-sys.path.append("/home/bread/fastai/")
+import pathconfig
+sys.path.append(pathconfig.sys_path)
 
 from fastai.conv_learner import *
 from model import get_learner
 from data import get_model_data
 
-PATH = Path('/home/bread/data/salt')
+PATH = Path(pathconfig.PATH)
 
 from skimage.transform import resize
 
@@ -25,7 +26,7 @@ def upsample(img):
     if img_size_ori == img_size_target:
         return img
     return resize(img, (img_size_target, img_size_target), mode='constant', preserve_range=True)
-    
+
 def downsample(img):
     if img_size_ori == img_size_target:
         return img
@@ -66,7 +67,7 @@ def main():
     rle_preds = []
     for m in predictions:
         rle_preds.append(rle_encoding(m))
-    
+
     rle_str = [' '.join(str(e) for e in rl) for rl in rle_preds]
 
     sub = pd.DataFrame(np.zeros((18000, 2)), columns=['id', 'rle_mask'])
