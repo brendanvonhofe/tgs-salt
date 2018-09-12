@@ -48,7 +48,7 @@ Resources:
 	
 	- Linknet: https://arxiv.org/pdf/1707.03718.pdf
 	
-	- Pyramid Scene Parsing Network: https://arxiv.org/pdf/1612.01105.pdf
+	- [Pyramid Scene Parsing Network](https://arxiv.org/pdf/1612.01105.pdf)
 	
 	- Fully Convolutional Networks for Semantic Segmentation: https://people.eecs.berkeley.edu/~jonlong/long_shelhamer_fcn.pdf
 	
