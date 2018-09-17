@@ -90,6 +90,20 @@ def lovasz_hinge(logits, labels, per_image=True, ignore=None):
         loss = lovasz_hinge_flat(*flatten_binary_scores(logits, labels, ignore))
     return loss
 
+# class LovaszHinge(nn.Module):
+#     def __init__(self, per_image=True, ignore=None):
+#         super().__init__()
+#         self.per_image = per_image
+#         self.ignore = ignore
+
+#     def forward(self, logits, labels):
+#         if self.per_image:
+#             loss = mean(lovasz_hinge_flat(*flatten_binary_scores(log.unsqueeze(0), lab.unsqueeze(0), self.ignore))
+#                           for log, lab in zip(logits, labels))
+#         else:
+#             loss = lovasz_hinge_flat(*flatten_binary_scores(logits, labels, self.ignore))
+#         return loss
+
 
 def lovasz_hinge_flat(logits, labels):
     """
@@ -102,12 +116,12 @@ def lovasz_hinge_flat(logits, labels):
         # only void pixels, the gradients should be 0
         return logits.sum() * 0.
     signs = 2. * labels.float() - 1.
-    errors = (1. - logits * Variable(signs))
+    errors = (1. - logits * (signs))
     errors_sorted, perm = torch.sort(errors, dim=0, descending=True)
     perm = perm.data
     gt_sorted = labels[perm]
     grad = lovasz_grad(gt_sorted)
-    loss = torch.dot(F.relu(errors_sorted), Variable(grad))
+    loss = torch.dot(F.relu(errors_sorted), (grad))
     return loss
 
 
