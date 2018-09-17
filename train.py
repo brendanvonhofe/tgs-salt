@@ -31,22 +31,22 @@ def main():
 
     lrs = np.array([lr/(cfg.lrs_scalings[0] ** 2),lr/cfg.lrs_scalings[0],lr])
 
-    learn.fit(lrs,1,wds=cfg.seq_wds[0],cycle_len=cfg.cycle_lens[0],use_clr=cfg.clrs[0], callbacks=[EarlyStopping(cfg.arch + str(0), learn)])
+    learn.fit(lrs,1,wds=cfg.seq_wds[0],cycle_len=cfg.cycle_lens[0],use_clr=cfg.clrs[0], callbacks=[EarlyStopping(cfg.save_name + str(0), learn)])
 
-    learn.load(cfg.arch + str(0))
+    learn.load(cfg.save_name + str(0))
 
     learn.unfreeze()
     learn.bn_freeze(True)
 
-    learn.fit(lrs/4, 1, wds=wd, cycle_len=cfg.cycle_lens[1], use_clr=cfg.clrs[1], callbacks=[EarlyStopping(cfg.arch + str(1), learn)])
+    learn.fit(lrs/4, 1, wds=wd, cycle_len=cfg.cycle_lens[1], use_clr=cfg.clrs[1], callbacks=[EarlyStopping(cfg.save_name + str(1), learn)])
 
-    learn.load(cfg.arch + str(0))
+    learn.load(cfg.save_name + str(0))
 
     lr=cfg.seq_lrs[1]
     wd=cfg.seq_wds[1]
 
     lrs = np.array([lr/(cfg.lrs_scalings[1] ** 2),lr/cfg.lrs_scalings[1],lr])
-    learn.fit(lrs, 1, wds=wd, cycle_len=cfg.cycle_lens[2], callbacks=[EarlyStopping(cfg.arch + str(2), learn)])
+    learn.fit(lrs, 1, wds=wd, cycle_len=cfg.cycle_lens[2], callbacks=[EarlyStopping(cfg.save_name + str(2), learn)])
 
 if __name__ == '__main__':
     main()

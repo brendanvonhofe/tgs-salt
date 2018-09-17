@@ -19,7 +19,7 @@ def main():
     # Make predictions
     learn.TTA() # Test time augmentation
     preds = learn.predict(is_test=True)
-    ids = np.array([str(a)[8:-4] for a in md.test_ds.fnames])
+    ids = np.array([str(a)[-14:-4] for a in md.test_ds.fnames])
 
     np.save(PATH/'preds.npy', preds)
     np.save(PATH/'test_ids.npy', ids)

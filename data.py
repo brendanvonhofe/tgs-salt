@@ -10,6 +10,10 @@ TRAIN_DN = 'images128'
 MASKS_DN = 'masks128'
 TEST_DN = 'test128'
 
+# TRAIN_DN = 'images128_scaled'
+# MASKS_DN = 'masks128_scaled'
+# TEST_DN = 'test128_scaled'
+
 class MatchedFilesDataset(FilesDataset):
     def __init__(self, fnames, y, transform, path):
         self.y=y

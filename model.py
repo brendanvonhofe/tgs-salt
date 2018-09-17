@@ -6,6 +6,8 @@ sys.path.append(pathconfig.sys_path)
 from fastai.conv_learner import *
 from data import get_model_data
 
+import lovasz_losses as L
+
 # Instantiate model
 def get_learner(arch='resnet34'):
     # Instantiate fastai learner
@@ -27,6 +29,7 @@ def get_learner(arch='resnet34'):
     models = UnetModel(m, lr_cut=lr_cut)
     learn = ConvLearner(md, models)
     learn.opt_fn=optim.Adam
+    # learn.crit=L.lovasz_hinge
     learn.crit=nn.BCEWithLogitsLoss()
     learn.metrics=[accuracy_thresh(0.5),dice]
 
