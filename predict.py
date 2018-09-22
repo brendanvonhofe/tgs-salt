@@ -14,16 +14,21 @@ def main():
     md = get_model_data()
 
     learn = get_learner(cfg.arch)
-    learn.load(cfg.arch + str(2))
+    preds = np.empty((0, 128, 128))
+    for i in range(cfg.ensemble):
 
-    # Make predictions
-    learn.TTA() # Test time augmentation
-    preds = learn.predict(is_test=True)
+        learn.load(cfg.arch + str(2) + '-' + str(i))
+        # Make predictions
+        learn.TTA() # Test time augmentation
+        preds = np.append(preds, [learn.predict(is_test=True)], axis = 0)
+
+
+
+
+    preds = np.mean(preds, axis = 0)
+    np.save(PATH/'preds.npy)', preds)
+
     ids = np.array([str(a)[8:-4] for a in md.test_ds.fnames])
-
-    np.save(PATH/'preds.npy', preds)
     np.save(PATH/'test_ids.npy', ids)
-
-
 if __name__ == '__main__':
     main()

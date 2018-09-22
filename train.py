@@ -20,33 +20,34 @@ class EarlyStopping(Callback):
 
 
 def main():
-    cfg.print_hps()
-    # Currently support "resnet34" and "densenet121"
-    learn = get_learner(cfg.arch)
+    for i in range(cfg.ensemble):
+        cfg.print_hps()
+        # Currently support "resnet34" and "densenet121"
+        learn = get_learner(cfg.arch)
 
-    learn.freeze_to(1)
+        learn.freeze_to(1)
 
-    lr=cfg.seq_lrs[0]
-    wd=cfg.seq_wds[0]
+        lr=cfg.seq_lrs[0]
+        wd=cfg.seq_wds[0]
 
-    lrs = np.array([lr/(cfg.lrs_scalings[0] ** 2),lr/cfg.lrs_scalings[0],lr])
+        lrs = np.array([lr/(cfg.lrs_scalings[0] ** 2),lr/cfg.lrs_scalings[0],lr])
 
-    learn.fit(lrs,1,wds=cfg.seq_wds[0],cycle_len=cfg.cycle_lens[0],use_clr=cfg.clrs[0], callbacks=[EarlyStopping(cfg.arch + str(0), learn)])
+        learn.fit(lrs,1,wds=cfg.seq_wds[0],cycle_len=cfg.cycle_lens[0],use_clr=cfg.clrs[0], callbacks=[EarlyStopping(cfg.arch + str(0) + '-' + str(i), learn)])
 
-    learn.load(cfg.arch + str(0))
+        learn.load(cfg.arch + str(0) + '-' + str(i))
 
-    learn.unfreeze()
-    learn.bn_freeze(True)
+        learn.unfreeze()
+        learn.bn_freeze(True)
 
-    learn.fit(lrs/4, 1, wds=wd, cycle_len=cfg.cycle_lens[1], use_clr=cfg.clrs[1], callbacks=[EarlyStopping(cfg.arch + str(1), learn)])
+        learn.fit(lrs/4, 1, wds=wd, cycle_len=cfg.cycle_lens[1], use_clr=cfg.clrs[1], callbacks=[EarlyStopping(cfg.arch + str(1) + '-' + str(i), learn)])
 
-    learn.load(cfg.arch + str(0))
+        learn.load(cfg.arch + str(0) + '-' + str(i))
 
-    lr=cfg.seq_lrs[1]
-    wd=cfg.seq_wds[1]
+        lr=cfg.seq_lrs[1]
+        wd=cfg.seq_wds[1]
 
-    lrs = np.array([lr/(cfg.lrs_scalings[1] ** 2),lr/cfg.lrs_scalings[1],lr])
-    learn.fit(lrs, 1, wds=wd, cycle_len=cfg.cycle_lens[2], callbacks=[EarlyStopping(cfg.arch + str(2), learn)])
+        lrs = np.array([lr/(cfg.lrs_scalings[1] ** 2),lr/cfg.lrs_scalings[1],lr])
+        learn.fit(lrs, 1, wds=wd, cycle_len=cfg.cycle_lens[2], callbacks=[EarlyStopping(cfg.arch + str(2) + '-' + str(i), learn)])
 
 if __name__ == '__main__':
     main()

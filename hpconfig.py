@@ -9,7 +9,8 @@ kernels = [256, 256, 256, 256]
 arch = "resnet34"
 # arch = "densenet121"
 p = [0.5, 0.5, 0.5, 0.0]
-
+ensemble = 3
+#ensemble = 1
 def print_hps():
     print("learning rates at each set of epochs: ", seq_lrs)
     print("scaling of learning rates through layer groups: ", lrs_scalings)
@@ -19,3 +20,4 @@ def print_hps():
     print("#kernels at each layer: ", kernels)
     print("architecture: ", arch)
     print("Probability of dropout in each layer: ", p)
+    print("Ensembling with", ensemble, "model(s)")
