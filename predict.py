@@ -14,7 +14,9 @@ def main():
     md = get_model_data()
 
     learn = get_learner(cfg.arch)
-    preds = np.empty((0, 128, 128))
+    ids = np.array([str(a)[8:-4] for a in md.test_ds.fnames])
+    num_images = len(ids)
+    preds = np.empty((0, num_images, 128, 128))
     for i in range(cfg.ensemble):
 
         learn.load(cfg.arch + str(2) + '-' + str(i))
@@ -27,8 +29,6 @@ def main():
 
     preds = np.mean(preds, axis = 0)
     np.save(PATH/'preds.npy)', preds)
-
-    ids = np.array([str(a)[8:-4] for a in md.test_ds.fnames])
     np.save(PATH/'test_ids.npy', ids)
 if __name__ == '__main__':
     main()
