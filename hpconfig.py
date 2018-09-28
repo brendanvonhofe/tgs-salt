@@ -8,7 +8,7 @@ kernels = [256, 256, 256, 256]
 #kernels = [256, 128, 64, 32]
 # arch = "resnet34"
 arch = "densenet121"
-save_name = "reflect"
+save_name = 'purple'
 p = [0, 0, 0, 0]
 
 def print_hps():

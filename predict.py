@@ -14,7 +14,7 @@ def main():
     md = get_model_data()
 
     learn = get_learner(cfg.arch)
-    learn.load(cfg.arch + str(2))
+    learn.load('reflect2')
 
     # Make predictions
     learn.TTA() # Test time augmentation

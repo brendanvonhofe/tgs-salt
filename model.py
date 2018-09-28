@@ -6,7 +6,7 @@ sys.path.append(pathconfig.sys_path)
 from fastai.conv_learner import *
 from data import get_model_data
 
-import lovasz_losses as L
+# import lovasz_losses as L
 
 # Instantiate model
 def get_learner(arch='resnet34'):

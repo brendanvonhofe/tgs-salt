@@ -31,7 +31,8 @@ def main():
 
     lrs = np.array([lr/(cfg.lrs_scalings[0] ** 2),lr/cfg.lrs_scalings[0],lr])
 
-    learn.fit(lrs,1,wds=cfg.seq_wds[0],cycle_len=cfg.cycle_lens[0],use_clr=cfg.clrs[0], callbacks=[EarlyStopping(cfg.save_name + str(0), learn)])
+    # learn.fit(lrs,1,wds=cfg.seq_wds[0],cycle_len=cfg.cycle_lens[0],use_clr=cfg.clrs[0], callbacks=[EarlyStopping(cfg.save_name + str(0), learn)])
+    learn.fit(lrs,1,wds=1e-7,cycle_len=20,use_clr=(5,8), callbacks=[EarlyStopping('utferror0', learn)])
 
     learn.load(cfg.save_name + str(0))
 
