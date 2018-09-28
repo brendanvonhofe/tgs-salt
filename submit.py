@@ -31,6 +31,11 @@ def downsample(img):
     if img_size_ori == img_size_target:
         return img
     return resize(img, (img_size_ori, img_size_ori), mode='constant', preserve_range=True, anti_aliasing=True)
+    
+def crop(img):
+    if img_size_ori == img_size_target:
+        return img
+    return img[3:104, 3:104]
 
 def myfunc(x):
     if(x > 0):
@@ -59,8 +64,8 @@ def main():
 
     preds101 = np.zeros((18000,101,101))
     for i in range(len(preds)):
-        preds101[i] = downsample(preds[i])
-
+        #preds101[i] = downsample(preds[i])
+        preds101[i] = crop(preds[i])
     vfunc = np.vectorize(myfunc)
     predictions = vfunc(preds101)
 
