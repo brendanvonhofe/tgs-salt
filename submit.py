@@ -8,7 +8,7 @@ from data import get_model_data
 
 PATH = Path(pathconfig.PATH)
 
-from skimage.transform import resize
+# from skimage.transform import resize
 
 img_size_ori = 101
 img_size_target = 128
@@ -22,15 +22,15 @@ img_size_target = 128
 #         up_im = upsample(im)
 #         imageio.imwrite(PATH/d128/fn, up_im)
 
-def upsample(img):
-    if img_size_ori == img_size_target:
-        return img
-    return resize(img, (img_size_target, img_size_target), mode='constant', preserve_range=True)
+# def upsample(img):
+#     if img_size_ori == img_size_target:
+#         return img
+#     return resize(img, (img_size_target, img_size_target), mode='constant', preserve_range=True)
 
-def downsample(img):
-    if img_size_ori == img_size_target:
-        return img
-    return resize(img, (img_size_ori, img_size_ori), mode='constant', preserve_range=True, anti_aliasing=True)
+# def downsample(img):
+#     if img_size_ori == img_size_target:
+#         return img
+#     return resize(img, (img_size_ori, img_size_ori), mode='constant', preserve_range=True, anti_aliasing=True)
 
 def myfunc(x):
     if(x > 0):
@@ -58,8 +58,14 @@ def main():
     ids = np.load(PATH/'test_ids.npy')
 
     preds101 = np.zeros((18000,101,101))
+
+    # If scaling was used to upsample to 128x128
+    # for i in range(len(preds)):
+    #     preds101[i] = downsample(preds[i])
+
+    # If reflection padding was used
     for i in range(len(preds)):
-        preds101[i] = downsample(preds[i])
+        preds101[i] = preds[i][0:101,0:101]
 
     vfunc = np.vectorize(myfunc)
     predictions = vfunc(preds101)
@@ -75,7 +81,7 @@ def main():
     sub['id'] = ids
     sub['rle_mask'] = rle_str
 
-    sub.to_csv(PATH/'bulshit.csv', index=False)
+    sub.to_csv(PATH/'reflect.csv', index=False)
 
     print("submission finished")
 

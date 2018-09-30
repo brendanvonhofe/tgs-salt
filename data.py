@@ -10,6 +10,10 @@ TRAIN_DN = 'images128'
 MASKS_DN = 'masks128'
 TEST_DN = 'test128'
 
+# TRAIN_DN = 'images128_scaled'
+# MASKS_DN = 'masks128_scaled'
+# TEST_DN = 'test128_scaled'
+
 class MatchedFilesDataset(FilesDataset):
     def __init__(self, fnames, y, transform, path):
         self.y=y
@@ -47,7 +51,7 @@ def get_model_data(batch_size=64):
 
     aug_tfms = transforms()
 
-    tfms = tfms_from_model(resnet34, im_size, crop_type=CropType.NO, tfm_y=TfmType.CLASS, aug_tfms=aug_tfms)
+    tfms = tfms_from_model(dn121, im_size, crop_type=CropType.NO, tfm_y=TfmType.CLASS, aug_tfms=aug_tfms)
     datasets = ImageData.get_ds(MatchedFilesDataset, trn, val, tfms, test=test, path=PATH)
     md = ImageData(PATH, datasets, batch_size, num_workers=16, classes=None)
 
